@@ -64,6 +64,7 @@ IMG_PLAY = "play_btn.png"
 IMG_FIND = "find_btn.png"
 IMG_ACCEPT = "accept_btn.png"
 IMG_LOCK = "lock_btn.png"
+IMG_OK = "ok_btn.png"
 IMG_CONTINUE_LIST = ["continue_btn_red.png", "continue_btn_green.png"]
 
 # Global logger initialization
@@ -396,7 +397,7 @@ def main():
         logger.error("Buttons directory not found: %s", BTNS_DIR)
         return 1
 
-    required_templates = [IMG_PLAY, IMG_FIND, IMG_ACCEPT, IMG_LOCK] + IMG_CONTINUE_LIST
+    required_templates = [IMG_PLAY, IMG_FIND, IMG_ACCEPT, IMG_LOCK, IMG_OK] + IMG_CONTINUE_LIST
     missing = [t for t in required_templates if not (BTNS_DIR / t).exists()]
     if missing:
         logger.error("Missing templates in btns/: %s", missing)
@@ -460,6 +461,17 @@ def main():
             win_x, win_y, _, _ = rect
             screen = capture_window_gray(sct, rect)
             if screen is None:
+                killer.sleep(2)
+                continue
+
+            # --- GLOBAL CHECKS ---
+            # Отлов системных ошибок, обрыва сети или ошибки загрузки лобби
+            tpl_ok = templates.get(IMG_OK)
+            if tpl_ok is not None and (hit := find_template(screen, tpl_ok)):
+                logger.warning("Dismissing 'OK' dialog (Network issue / Disconnect) and returning to MENU.")
+                abs_x, abs_y = win_x + hit[0], win_y + hit[1]
+                dota_click(window_id, abs_x, abs_y)
+                state = State.MENU
                 killer.sleep(2)
                 continue
 

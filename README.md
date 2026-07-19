@@ -81,8 +81,3 @@ Auto-farm event tickets:
 ```
 io, rubick, oracle, doom, wraith, jakiro, sven, abaddon, kotl, chaos, muerta
 ```
-
-Auto-farm Smelt tokens:
-```
-muerta, muerta, wraith, wraith, sven, sven, kotl, oracle
-```
